@@ -17,6 +17,7 @@ import {
   TEST_COMMAND,
   HasGuildCommands,
 } from './commands.js';
+import cache from './cache';
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
@@ -199,16 +200,24 @@ app.listen(PORT, () => {
 });
 
 setInterval(() => {
+  const lastSaleTime = cache.get('lastSaleTime', null) || DateTime.now().startOf('minute').minus(59000).toUnixInteger()
+  console.log('Last sale (in seconds since Unix epoch): '+cache.get('lastSaleTime', null));
+  
+  axios.get('https://api.opensea.io/api/v1/events', {
+      headers: {
+          'X-API-KEY': process.env.X_API_KEY
+      },
+      params: {
+          collection_slug: process.env.COLLECTION_ADDRESS,
+          event_type: 'successful',
+          occurred_after: 1677709116,
+          only_opensea: 'false'
+      }
+  }).then((response) => {
 
-    axios.get('https://api.opensea.io/api/v1/events?only_opensea=false&asset_contract_address='+process.env.CONTRACT_ADDRESS+'&event_type=successful', {
-        headers: {
-            'X-API-KEY': process.env.OPENSEA_API_KEY
-        }
-    }).then((response) => {
-
-      const data = response.data     
-    
-    }).catch((error) => {
-        console.error(error);
-    });
-}, 300000);
+    console.log(response)
+  
+  }).catch((error) => {
+      console.error(error);
+  });
+}, 60000);
