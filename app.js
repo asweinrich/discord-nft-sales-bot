@@ -17,7 +17,7 @@ import {
   TEST_COMMAND,
   HasGuildCommands,
 } from './commands.js';
-const cache = require('./cache');
+import cache from './cache.js';
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
