@@ -1,5 +1,9 @@
 import 'dotenv/config';
 import express from 'express';
+import { DateTime } from 'luxon';
+import axios from 'axios';
+import crypto from 'crypto';
+import { Client, Events, GatewayIntentBits, EmbedBuilder } from 'discord.js';
 import {
   InteractionType,
   InteractionResponseType,
@@ -8,12 +12,24 @@ import {
   ButtonStyleTypes,
 } from 'discord-interactions';
 import { VerifyDiscordRequest, getRandomEmoji, DiscordRequest } from './utils.js';
-import { getShuffledOptions, getResult } from './game.js';
 import {
   CHALLENGE_COMMAND,
   TEST_COMMAND,
   HasGuildCommands,
 } from './commands.js';
+
+const client = new Client({ intents: [GatewayIntentBits.Guilds] });
+
+let channel = null
+
+client.once(Events.ClientReady, c => {
+  channel = client.channels.cache.get('1058121514404282428');
+  console.log('Ready! Logged in as '+c.user.tag);
+  console.log('Currently sending NFT Sales updates in :'+channel)
+});
+
+client.login(process.env.DISCORD_TOKEN);
+
 
 // Create an express app
 const app = express();
@@ -21,9 +37,6 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 // Parse request body and verifies incoming requests using discord-interactions package
 app.use(express.json({ verify: VerifyDiscordRequest(process.env.PUBLIC_KEY) }));
-
-// Store for in-progress games. In production, you'd want to use a DB
-const activeGames = {};
 
 /**
  * Interactions endpoint URL where Discord will send HTTP requests
@@ -184,3 +197,18 @@ app.listen(PORT, () => {
     CHALLENGE_COMMAND,
   ]);
 });
+
+setInterval(() => {
+
+    axios.get('https://api.opensea.io/api/v1/events?only_opensea=false&asset_contract_address='+process.env.CONTRACT_ADDRESS+'&event_type=successful', {
+        headers: {
+            'X-API-KEY': process.env.OPENSEA_API_KEY
+        }
+    }).then((response) => {
+
+      const data = response.data     
+    
+    }).catch((error) => {
+        console.error(error);
+    });
+}, 300000);
