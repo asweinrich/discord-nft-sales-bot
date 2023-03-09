@@ -87,27 +87,16 @@ app.listen(PORT, () => {
 });
 
 // loadJSON method to open the JSON file.
-function loadJSON(path, success, error) {
-    var xhr = new XMLHttpRequest();
-    xhr.onreadystatechange = function () {
-      if (xhr.readyState === 4) {
-        if (xhr.status === 200) {
-          success(JSON.parse(xhr.responseText));
-        }
-        else {
-          error(xhr);
-        }
-      }
-    };
-    xhr.open('GET', path, true);
-    xhr.send();
+function loadJSON(path) {
+  axios.get(path)
+    .then(response => {
+      const jsonData = response.data;
+      console.log(jsonData);
+    })
+    .catch(error => {
+      console.log(error);
+    });
 }
-
-function myData(Data) {
-    // Output 
-    console.log(Data);
-}
-
 
 // Format Embed
 function formatAndSendEmbed(event) {
@@ -116,7 +105,7 @@ function formatAndSendEmbed(event) {
     const openseaLink = _.get(event, ['asset', 'permalink'], _.get(event, ['asset_bundle', 'permalink']));
     const metadataUrl = _.get(event, ['asset', 'token_metadata'], _.get(event, ['asset_bundle', 'token_metadata']));
   
-    loadJSON(metadataUrl, myData,'jsonp');
+    loadJSON(metadataUrl);
     
     let finalBuyer = '';
     
