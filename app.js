@@ -91,7 +91,7 @@ function loadJSON(path) {
   axios.get(path)
     .then(response => {
       const jsonData = response.data;
-      console.log(jsonData);
+      console.log(jsonData.attributes);
     })
     .catch(error => {
       console.log(error);
