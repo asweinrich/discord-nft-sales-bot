@@ -17,14 +17,14 @@ import {
   TEST_COMMAND,
   HasGuildCommands,
 } from './commands.js';
-import { Cache } from 'cache.js';
+var cache = import('./cache.js);
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
 let channel = null
 
 client.once(Events.ClientReady, c => {
-  channel = client.channels.cache.get('1058121514404282428');
+  channel = client.channels.cache.get('942115367935967264');
   console.log('Ready! Logged in as '+c.user.tag);
   console.log('Currently sending NFT Sales updates in :'+channel)
 });
@@ -85,8 +85,8 @@ app.listen(PORT, () => {
 });
 
 setInterval(() => {
-  const lastSaleTime = Cache.get('lastSaleTime', null) || DateTime.now().startOf('minute').minus(59000).toUnixInteger()
-  console.log('Last sale (in seconds since Unix epoch): '+Cache.get('lastSaleTime', null));
+  const lastSaleTime = cache.get('lastSaleTime', null) || DateTime.now().startOf('minute').minus(59000).toUnixInteger()
+  console.log('Last sale (in seconds since Unix epoch): '+cache.get('lastSaleTime', null));
   
   axios.get('https://api.opensea.io/api/v1/events', {
       headers: {
