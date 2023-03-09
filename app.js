@@ -93,7 +93,7 @@ setInterval(() => {
           'X-API-KEY': process.env.X_API_KEY
       },
       params: {
-          collection_slug: process.env.COLLECTION_ADDRESS,
+          collection_slug: process.env.COLLECTION_SLUG,
           event_type: 'successful',
           occurred_after: 1677709116,
           only_opensea: 'false'
