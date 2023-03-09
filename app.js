@@ -86,12 +86,37 @@ app.listen(PORT, () => {
   ]);
 });
 
+// loadJSON method to open the JSON file.
+function loadJSON(path, success, error) {
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState === 4) {
+        if (xhr.status === 200) {
+          success(JSON.parse(xhr.responseText));
+        }
+        else {
+          error(xhr);
+        }
+      }
+    };
+    xhr.open('GET', path, true);
+    xhr.send();
+}
+
+function myData(Data) {
+    // Output 
+    console.log(Data);
+}
+
 
 // Format Embed
 function formatAndSendEmbed(event) {
     // Handle both individual items + bundle sales
     const assetName = _.get(event, ['asset', 'name'], _.get(event, ['asset_bundle', 'name']));
     const openseaLink = _.get(event, ['asset', 'permalink'], _.get(event, ['asset_bundle', 'permalink']));
+    const metadataUrl = _.get(event, ['asset', 'token_metadata'], _.get(event, ['asset_bundle', 'token_metadata']));
+  
+    loadJSON(metadataUrl, myData,'jsonp');
     
     let finalBuyer = '';
     
@@ -150,7 +175,7 @@ setInterval(() => {
       params: {
           collection_slug: process.env.COLLECTION_SLUG,
           event_type: 'successful',
-          occurred_after: lastSaleTime,
+          occurred_after: 1678216611,
           only_opensea: 'false'
       }
   }).then((response) => {
