@@ -18,6 +18,7 @@ import {
   HasGuildCommands,
 } from './commands.js';
 import cache from './cache.js';
+import _ from 'lodash';
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
@@ -100,8 +101,17 @@ setInterval(() => {
       }
   }).then((response) => {
 
-    console.log(response)
-    cache.set('lastSaleTime', 1677709116);
+    const events = _.get(response, ['data', 'asset_events']);
+    const sortedEvents = _.sortBy(events, function(event) {
+        const created = _.get(event, 'created_date');
+        return new Date(created);
+    })
+
+    console.log(events.length, ' sales since the last one...');
+
+    _.each(sortedEvents, (event) => {
+        const created = _.get(event, 'created_date');
+        cache.set('lastSaleTime', DateTime.fromISO(created).toUnixInteger());
   
   }).catch((error) => {
       console.error(error);
