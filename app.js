@@ -19,6 +19,7 @@ import {
 } from './commands.js';
 import cache from './cache.js';
 import _ from 'lodash';
+import { ethers } from 'ethers';
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
