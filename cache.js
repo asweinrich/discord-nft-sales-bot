@@ -1,3 +1,5 @@
+export const cache = {}
+
 export function get(key) {
     return this.cache[key]
 }
