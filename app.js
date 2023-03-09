@@ -112,7 +112,7 @@ setInterval(() => {
     _.each(sortedEvents, (event) => {
         const created = _.get(event, 'created_date');
         cache.set('lastSaleTime', DateTime.fromISO(created).toUnixInteger());
-  
+    });
   }).catch((error) => {
       console.error(error);
   });
