@@ -85,6 +85,57 @@ app.listen(PORT, () => {
   ]);
 });
 
+
+// Format Embed
+function formatAndSendEmbed(event) {
+    // Handle both individual items + bundle sales
+    const assetName = _.get(event, ['asset', 'name'], _.get(event, ['asset_bundle', 'name']));
+    const openseaLink = _.get(event, ['asset', 'permalink'], _.get(event, ['asset_bundle', 'permalink']));
+    
+    let finalBuyer = '';
+    
+    const buyerAddr = _.get(event, ['winner_account', 'address']).slice(2, 6);
+    if(_.get(event, ['winner_account', 'user', 'username']) != null) {
+        let buyerName = _.get(event, ['winner_account', 'user', 'username']);
+        if(buyerName.length > 10) {
+            buyerName = buyerName.slice(0, 10) + '...';
+        }
+        finalBuyer = buyerName;
+    } else {
+        finalBuyer = buyerAddr;
+    }      
+
+    const totalPrice = _.get(event, 'total_price');
+
+    const tokenDecimals = _.get(event, ['payment_token', 'decimals']);
+    const tokenUsdPrice = _.get(event, ['payment_token', 'usd_price']);
+    const tokenEthPrice = _.get(event, ['payment_token', 'eth_price']);
+
+    const formattedUnits = ethers.utils.formatUnits(totalPrice, tokenDecimals);
+    const formattedEthPrice = formattedUnits * tokenEthPrice;
+    const formattedUsdPrice = formattedUnits * tokenUsdPrice;
+
+    const tweetText = `The federally wanted individual known as ${assetName} was captured by ${finalBuyer} for a bounty of ${formattedEthPrice}${ethers.constants.EtherSymbol} ($${Number(formattedUsdPrice).toFixed(2)}) ${openseaLink}`;
+
+    console.log(tweetText);
+
+    const imageUrl = _.get(event, ['asset', 'image_url']);
+
+    // inside a command, event listener, etc.
+    const exampleEmbed = new EmbedBuilder()
+      .setColor('#aa0000')
+      .setTitle(assetName)
+      .setDescription(tweetText)
+      .addFields(
+        { name: 'Price', value: formattedEthPrice+' ETH', inline: true },
+        { name: 'Captor', value: finalBuyer, inline: true },
+      )
+      .setImage(imageUrl)
+      .setTimestamp()
+      .setFooter({ text: 'Wild Bunch Sales Bot' , iconURL: 'https://asweinrich.dev/media/WAVERUNNERS.png'});
+    channel.send({ embeds: [exampleEmbed] });
+}
+
 setInterval(() => {
   const lastSaleTime = cache.get('lastSaleTime', null) || DateTime.now().startOf('minute').minus(59000).toUnixInteger()
   console.log('Last sale (in seconds since Unix epoch): '+cache.get('lastSaleTime', null));
@@ -112,6 +163,7 @@ setInterval(() => {
     _.each(sortedEvents, (event) => {
         const created = _.get(event, 'created_date');
         cache.set('lastSaleTime', DateTime.fromISO(created).toUnixInteger());
+        return formatAndSendEmbed(event);
     });
   }).catch((error) => {
       console.error(error);
