@@ -95,11 +95,11 @@ function formatAndSendEmbed(event) {
     
     let finalBuyer = '';
     
-    const buyerAddr = _.get(event, ['winner_account', 'address']).slice(2, 6);
+    const buyerAddr = _.get(event, ['winner_account', 'address']).slice(0, 6);
     if(_.get(event, ['winner_account', 'user', 'username']) != null) {
         let buyerName = _.get(event, ['winner_account', 'user', 'username']);
-        if(buyerName.length > 10) {
-            buyerName = buyerName.slice(0, 10) + '...';
+        if(buyerName.length > 15) {
+            buyerName = buyerName.slice(0, 15) + '...';
         }
         finalBuyer = buyerName;
     } else {
@@ -116,24 +116,26 @@ function formatAndSendEmbed(event) {
     const formattedEthPrice = formattedUnits * tokenEthPrice;
     const formattedUsdPrice = formattedUnits * tokenUsdPrice;
 
-    const tweetText = `The federally wanted individual known as ${assetName} was captured by ${finalBuyer} for a bounty of ${formattedEthPrice}${ethers.constants.EtherSymbol} ($${Number(formattedUsdPrice).toFixed(2)}) ${openseaLink}`;
+    const description = `The federally wanted individual known as ${assetName} was captured by ${finalBuyer} for a bounty of ${formattedEthPrice} ETH`;
 
-    console.log(tweetText);
+    console.log(description);
 
     const imageUrl = _.get(event, ['asset', 'image_url']);
 
     // inside a command, event listener, etc.
     const exampleEmbed = new EmbedBuilder()
       .setColor('#aa0000')
-      .setTitle(assetName)
-      .setDescription(tweetText)
+      .setAuthor({ name: 'Wild Bunch Sales Bot' , iconURL: 'https://asweinrich.dev/media/WAVERUNNERS.png'})
+      .setTitle(assetName.toUpperCase()+' CAPTURED!')
+      .setDescription(description)
+      .setURL(openseaLink)
       .addFields(
-        { name: 'Price', value: formattedEthPrice+' ETH', inline: true },
+        { name: 'Bounty', value: formattedEthPrice+ethers.constants.EtherSymbol, inline: true },
+        { name: 'USD', value: '$'+Number(formattedUsdPrice).toFixed(2), inline: true },
         { name: 'Captor', value: finalBuyer, inline: true },
       )
       .setImage(imageUrl)
-      .setTimestamp()
-      .setFooter({ text: 'Wild Bunch Sales Bot' , iconURL: 'https://asweinrich.dev/media/WAVERUNNERS.png'});
+      .setTimestamp();
     channel.send({ embeds: [exampleEmbed] });
 }
 
