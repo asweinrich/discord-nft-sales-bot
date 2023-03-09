@@ -150,7 +150,7 @@ setInterval(() => {
       params: {
           collection_slug: process.env.COLLECTION_SLUG,
           event_type: 'successful',
-          occurred_after: 1677709116,
+          occurred_after: lastSaleTime,
           only_opensea: 'false'
       }
   }).then((response) => {
