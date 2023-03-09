@@ -101,6 +101,7 @@ setInterval(() => {
   }).then((response) => {
 
     console.log(response)
+    cache.set('lastSaleTime', 1677709116);
   
   }).catch((error) => {
       console.error(error);
