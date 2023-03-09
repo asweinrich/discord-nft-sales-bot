@@ -17,7 +17,7 @@ import {
   TEST_COMMAND,
   HasGuildCommands,
 } from './commands.js';
-var cache = import('./cache.js');
+import * as Cache from './cache.js';
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
@@ -85,8 +85,8 @@ app.listen(PORT, () => {
 });
 
 setInterval(() => {
-  const lastSaleTime = cache.get('lastSaleTime', null) || DateTime.now().startOf('minute').minus(59000).toUnixInteger()
-  console.log('Last sale (in seconds since Unix epoch): '+cache.get('lastSaleTime', null));
+  const lastSaleTime = Cache.get('lastSaleTime', null) || DateTime.now().startOf('minute').minus(59000).toUnixInteger()
+  console.log('Last sale (in seconds since Unix epoch): '+Cache.get('lastSaleTime', null));
   
   axios.get('https://api.opensea.io/api/v1/events', {
       headers: {
