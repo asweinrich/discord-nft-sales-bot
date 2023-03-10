@@ -153,7 +153,7 @@ async function formatAndSendEmbed(event) {
     // inside a command, event listener, etc.
     const exampleEmbed = new EmbedBuilder()
       .setColor('#aa0000')
-      .setAuthor({ name: 'Wild Bunch Sales Bot' , iconURL: 'https://wbstudio.asweinrich.dev/static/media/icon-malibu-high.bbead94456f9e4faa388.png'})
+      .setAuthor({ name: 'Fugitive Tracking Report'})
       .setTitle(assetName.toUpperCase()+' CAPTURED!')
       .setDescription(description)
       .setURL(openseaLink)
@@ -164,6 +164,7 @@ async function formatAndSendEmbed(event) {
         { name: 'Threat Level', value: threatLevel, inline: true },
       )
       .setImage(imageUrl)
+      .setFooter({ text: 'Last Stand Trading Co.' , iconURL: 'https://wbstudio.asweinrich.dev/static/media/icon-malibu-high.bbead94456f9e4faa388.png'})
       .setTimestamp();
     channel.send({ embeds: [exampleEmbed] });
 }
