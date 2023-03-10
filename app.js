@@ -87,25 +87,39 @@ app.listen(PORT, () => {
 });
 
 // loadJSON method to open the JSON file.
-function loadJSON(path) {
-  axios.get(path)
-    .then(response => {
-      const jsonData = response.data;
-      console.log(jsonData.attributes);
-    })
-    .catch(error => {
-      console.log(error);
-    });
+async function loadJSON(path) {
+  try {
+    const response = await axios.get(path)
+    const jsonData = response.data
+    const traits = jsonData.attributes
+    let returnThis = 'White'
+    for(let i = 0; i < traits.length; i++) {
+      console.log('i: ',i)
+      console.log('traits: ',traits)
+      if(traits[i].trait_type === 'Background' && traits[i].value === 'Wanted') {
+        returnThis = 'Wanted'
+      }
+    }
+    return returnThis
+  } catch (error) {
+    console.log(error)
+  }
 }
 
 // Format Embed
-function formatAndSendEmbed(event) {
+async function formatAndSendEmbed(event) {
     // Handle both individual items + bundle sales
     const assetName = _.get(event, ['asset', 'name'], _.get(event, ['asset_bundle', 'name']));
     const openseaLink = _.get(event, ['asset', 'permalink'], _.get(event, ['asset_bundle', 'permalink']));
     const metadataUrl = _.get(event, ['asset', 'token_metadata'], _.get(event, ['asset_bundle', 'token_metadata']));
   
-    loadJSON(metadataUrl);
+    const background = await loadJSON(metadataUrl);
+    
+    let threatLevel = 'Moderate'
+
+    if (background === 'Wanted') {
+      threatLevel = 'Most Wanted'
+    }
     
     let finalBuyer = '';
     
@@ -139,7 +153,7 @@ function formatAndSendEmbed(event) {
     // inside a command, event listener, etc.
     const exampleEmbed = new EmbedBuilder()
       .setColor('#aa0000')
-      .setAuthor({ name: 'Wild Bunch Sales Bot' , iconURL: 'https://asweinrich.dev/media/WAVERUNNERS.png'})
+      .setAuthor({ name: 'Wild Bunch Sales Bot' , iconURL: 'https://wbstudio.asweinrich.dev/static/media/icon-malibu-high.bbead94456f9e4faa388.png'})
       .setTitle(assetName.toUpperCase()+' CAPTURED!')
       .setDescription(description)
       .setURL(openseaLink)
@@ -147,6 +161,7 @@ function formatAndSendEmbed(event) {
         { name: 'Bounty', value: formattedEthPrice+ethers.constants.EtherSymbol, inline: true },
         { name: 'USD', value: '$'+Number(formattedUsdPrice).toFixed(2), inline: true },
         { name: 'Captor', value: finalBuyer, inline: true },
+        { name: 'Threat Level', value: threatLevel, inline: true },
       )
       .setImage(imageUrl)
       .setTimestamp();
@@ -164,7 +179,7 @@ setInterval(() => {
       params: {
           collection_slug: process.env.COLLECTION_SLUG,
           event_type: 'successful',
-          occurred_after: 1678216611,
+          occurred_after: lastSaleTime,
           only_opensea: 'false'
       }
   }).then((response) => {
