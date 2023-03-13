@@ -161,10 +161,10 @@ async function formatAndSendEmbed(event) {
         { name: 'Bounty', value: formattedEthPrice+ethers.constants.EtherSymbol, inline: true },
         { name: 'USD', value: '$'+Number(formattedUsdPrice).toFixed(2), inline: true },
         { name: 'Captor', value: finalBuyer, inline: true },
-        { name: 'Threat Level', value: threatLevel, inline: true },
+        //{ name: 'Threat Level', value: threatLevel, inline: true },
       )
       .setImage(imageUrl)
-      .setFooter({ text: 'Last Stand Trading Co.' , iconURL: 'https://wbstudio.asweinrich.dev/static/media/icon-malibu-high.bbead94456f9e4faa388.png'})
+      .setFooter({ text: 'Last Stand Trading Co.' , iconURL: 'https://wbstudio.asweinrich.dev/Untiled-2.png'})
       .setTimestamp();
     channel.send({ embeds: [exampleEmbed] });
 }
@@ -180,7 +180,7 @@ setInterval(() => {
       params: {
           collection_slug: process.env.COLLECTION_SLUG,
           event_type: 'successful',
-          occurred_after: lastSaleTime,
+          occurred_after: 1678650409,
           only_opensea: 'false'
       }
   }).then((response) => {
