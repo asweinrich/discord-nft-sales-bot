@@ -12,11 +12,7 @@ import {
   ButtonStyleTypes,
 } from 'discord-interactions';
 import { VerifyDiscordRequest, getRandomEmoji, DiscordRequest } from './utils.js';
-import {
-  CHALLENGE_COMMAND,
-  TEST_COMMAND,
-  HasGuildCommands,
-} from './commands.js';
+//import { CHALLENGE_COMMAND, TEST_COMMAND, HasGuildCommands } from './commands.js';
 import cache from './cache.js';
 import _ from 'lodash';
 import { ethers } from 'ethers';
@@ -77,14 +73,14 @@ app.post('/interactions', async function (req, res) {
   }
 });
 
-app.listen(PORT, () => {
+{/* app.listen(PORT, () => {
   console.log('Listening on port', PORT);
   // Check if guild commands from commands.js are installed (if not, install them)
   HasGuildCommands(process.env.APP_ID, process.env.GUILD_ID, [
     TEST_COMMAND,
     CHALLENGE_COMMAND,
   ]);
-});
+}); */}
 
 // loadJSON method to open the JSON file.
 async function loadJSON(path) {
@@ -180,7 +176,7 @@ setInterval(() => {
       params: {
           collection_slug: process.env.COLLECTION_SLUG,
           event_type: 'successful',
-          occurred_after: 1678564009,
+          occurred_after: lastSaleTime,
           only_opensea: 'false'
       }
   }).then((response) => {
@@ -201,4 +197,4 @@ setInterval(() => {
   }).catch((error) => {
       console.error(error);
   });
-}, 60000);
+}, 20000);
