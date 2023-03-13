@@ -164,7 +164,7 @@ async function formatAndSendEmbed(event) {
         //{ name: 'Threat Level', value: threatLevel, inline: true },
       )
       .setImage(imageUrl)
-      .setFooter({ text: 'Last Stand Trading Co.' , iconURL: 'https://wbstudio.asweinrich.dev/Untiled-2.png'})
+      .setFooter({ text: 'Last Stand Trading Co.' , iconURL: 'https://wbstudio.asweinrich.dev/Untitled-2.png'})
       .setTimestamp();
     channel.send({ embeds: [exampleEmbed] });
 }
@@ -180,7 +180,7 @@ setInterval(() => {
       params: {
           collection_slug: process.env.COLLECTION_SLUG,
           event_type: 'successful',
-          occurred_after: 1678650409,
+          occurred_after: 1678564009,
           only_opensea: 'false'
       }
   }).then((response) => {
