@@ -22,7 +22,7 @@ const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 let channel = null
 
 client.once(Events.ClientReady, c => {
-  channel = client.channels.cache.get('942115367935967264');
+  channel = client.channels.cache.get('928367832016777247');
   console.log('Ready! Logged in as '+c.user.tag);
   console.log('Currently sending NFT Sales updates in :'+channel)
 });
@@ -117,7 +117,7 @@ async function formatAndSendEmbed(event) {
     
     let finalBuyer = '';
     
-    const buyerAddr = _.get(event, ['winner_account', 'address']).slice(0, 6);
+    const buyerAddr = _.get(event, ['winner_account', 'address']).slice(2, 8);
     if(_.get(event, ['winner_account', 'user', 'username']) != null) {
         let buyerName = _.get(event, ['winner_account', 'user', 'username']);
         if(buyerName.length > 15) {
@@ -174,7 +174,7 @@ setInterval(() => {
       params: {
           collection_slug: process.env.COLLECTION_SLUG,
           event_type: 'successful',
-          occurred_after: 1678797214,
+          occurred_after: lastSaleTime,
           only_opensea: 'false'
       }
   }).then((response) => {
