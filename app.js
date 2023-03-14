@@ -21,7 +21,7 @@ const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 let channel = null
 
 client.once(Events.ClientReady, c => {
-  channel = client.channels.cache.get('928367832016777247');
+  channel = client.channels.cache.get('942115367935967264');
   console.log('Ready! Logged in as '+c.user.tag);
   console.log('Currently sending NFT Sales updates in :'+channel)
 });
@@ -125,7 +125,7 @@ setInterval(() => {
       params: {
           collection_slug: process.env.COLLECTION_SLUG,
           event_type: 'successful',
-          occurred_after: lastSaleTime,
+          occurred_after: 1678797214,
           only_opensea: 'false'
       }
   }).then((response) => {
