@@ -22,7 +22,7 @@ const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 let channel = null
 
 client.once(Events.ClientReady, c => {
-  channel = client.channels.cache.get('942115367935967264');
+  channel = client.channels.cache.get('928367832016777247');
   console.log('Ready! Logged in as '+c.user.tag);
   console.log('Currently sending NFT Sales updates in :'+channel)
 });
@@ -40,21 +40,18 @@ app.use(express.json({ verify: VerifyDiscordRequest(process.env.PUBLIC_KEY) }));
 /**
  * Interactions endpoint URL where Discord will send HTTP requests
  */
+{/*
 app.post('/interactions', async function (req, res) {
   // Interaction type and data
   const { type, id, data } = req.body;
 
-  /**
-   * Handle verification requests
-   */
+  //
   if (type === InteractionType.PING) {
     return res.send({ type: InteractionResponseType.PONG });
   }
 
-  /**
-   * Handle slash command requests
-   * See https://discord.com/developers/docs/interactions/application-commands#slash-commands
-   */
+  // Handle slash command requests
+
   if (type === InteractionType.APPLICATION_COMMAND) {
     const { name } = data;
 
@@ -72,6 +69,7 @@ app.post('/interactions', async function (req, res) {
  
   }
 });
+*/}
 
 {/* app.listen(PORT, () => {
   console.log('Listening on port', PORT);
