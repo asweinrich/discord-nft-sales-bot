@@ -12,7 +12,7 @@ import {
   ButtonStyleTypes,
 } from 'discord-interactions';
 import { VerifyDiscordRequest, getRandomEmoji, DiscordRequest } from './utils.js';
-//import { CHALLENGE_COMMAND, TEST_COMMAND, HasGuildCommands } from './commands.js';
+import { CHALLENGE_COMMAND, TEST_COMMAND, HasGuildCommands } from './commands.js';
 import cache from './cache.js';
 import _ from 'lodash';
 import { ethers } from 'ethers';
@@ -40,7 +40,7 @@ app.use(express.json({ verify: VerifyDiscordRequest(process.env.PUBLIC_KEY) }));
 /**
  * Interactions endpoint URL where Discord will send HTTP requests
  */
-{/*
+
 app.post('/interactions', async function (req, res) {
   // Interaction type and data
   const { type, id, data } = req.body;
@@ -69,7 +69,7 @@ app.post('/interactions', async function (req, res) {
  
   }
 });
-*/}
+
 
 {/* app.listen(PORT, () => {
   console.log('Listening on port', PORT);
