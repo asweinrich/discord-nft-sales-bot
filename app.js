@@ -164,7 +164,8 @@ async function formatAndSendEmbed(event) {
 }
 
 setInterval(() => {
-  const lastSaleTime = cache.get('lastSaleTime', null) || DateTime.now().startOf('minute').minus(59000).toUnixInteger()
+  const lastSaleTime = 1706317849
+    //cache.get('lastSaleTime', null) || DateTime.now().startOf('minute').minus(59000).toUnixInteger()
   console.log('Last sale (in seconds since Unix epoch): '+cache.get('lastSaleTime', null));
   
   axios.get('https://api.opensea.io/api/v2/events/collection/'+process.env.COLLECTION_SLUG, {
