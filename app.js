@@ -167,7 +167,7 @@ setInterval(() => {
   const lastSaleTime = cache.get('lastSaleTime', null) || DateTime.now().startOf('minute').minus(59000).toUnixInteger()
   console.log('Last sale (in seconds since Unix epoch): '+cache.get('lastSaleTime', null));
   
-  axios.get('https://api.opensea.io/api/v1/events', {
+  axios.get('https://api.opensea.io/api/v2/events', {
       headers: {
           'X-API-KEY': process.env.OPENSEA_API_KEY
       },
