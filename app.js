@@ -172,7 +172,7 @@ setInterval(() => {
           'X-API-KEY': process.env.OPENSEA_API_KEY
       },
       params: {
-          event_type: 'successful',
+          event_type: 'sale',
           after: lastSaleTime
       }
   }).then((response) => {
