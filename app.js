@@ -117,16 +117,9 @@ async function formatAndSendEmbed(event) {
     
     let finalBuyer = '';
     
-    const buyerAddr = _.get(event, ['winner_account', 'address']).slice(2, 8);
-    if(_.get(event, ['winner_account', 'user', 'username']) != null) {
-        let buyerName = _.get(event, ['winner_account', 'user', 'username']);
-        if(buyerName.length > 15) {
-            buyerName = buyerName.slice(0, 15) + '...';
-        }
-        finalBuyer = buyerName;
-    } else {
-        finalBuyer = buyerAddr;
-    }      
+    const buyerAddr = _.get(event, ['buyer']).slice(2, 8);
+    finalBuyer = buyerAddr;
+          
 
     const totalPrice = _.get(event, 'total_price');
 
