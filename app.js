@@ -103,39 +103,24 @@ async function loadJSON(path) {
 // Format Embed
 async function formatAndSendEmbed(event) {
     // Handle both individual items + bundle sales
-    const assetName = _.get(event, ['asset', 'name'], _.get(event, ['asset_bundle', 'name']));
-    const openseaLink = _.get(event, ['asset', 'permalink'], _.get(event, ['asset_bundle', 'permalink']));
-    const metadataUrl = _.get(event, ['asset', 'token_metadata'], _.get(event, ['asset_bundle', 'token_metadata']));
-  
-    const background = await loadJSON(metadataUrl);
-    
-    let threatLevel = 'Moderate'
-
-    if (background === 'Wanted') {
-      threatLevel = 'Most Wanted'
-    }
-    
-    let finalBuyer = '';
+    const assetName = _.get(event, ['nft', 'name']);
+    const openseaLink = _.get(event, ['nft', 'opensea_url']);
     
     const buyerAddr = _.get(event, ['buyer']).slice(2, 8);
-    finalBuyer = buyerAddr;
           
 
-    const totalPrice = _.get(event, 'total_price');
+    const totalPrice = _.get(event, ['payment', 'quantity']);
 
-    const tokenDecimals = _.get(event, ['payment_token', 'decimals']);
-    const tokenUsdPrice = _.get(event, ['payment_token', 'usd_price']);
-    const tokenEthPrice = _.get(event, ['payment_token', 'eth_price']);
+    const tokenDecimals = _.get(event, ['payment', 'decimals']);
 
     const formattedUnits = ethers.utils.formatUnits(totalPrice, tokenDecimals);
-    const formattedEthPrice = formattedUnits * tokenEthPrice;
-    const formattedUsdPrice = formattedUnits * tokenUsdPrice;
+    const units = _.get(event, ['payment', 'symbol']);
 
-    const description = `The federally wanted individual known as ${assetName} was captured by ${finalBuyer} for a bounty of ${formattedEthPrice} ETH`;
+    const description = `The federally wanted individual known as ${assetName} was captured by ${buyerAddr} for a bounty of ${formattedUnits} ${units}`;
 
     console.log(description);
 
-    const imageUrl = _.get(event, ['asset', 'image_url']);
+    const imageUrl = _.get(event, ['nft', 'image_url']);
 
     // inside a command, event listener, etc.
     const exampleEmbed = new EmbedBuilder()
@@ -145,9 +130,8 @@ async function formatAndSendEmbed(event) {
       .setDescription(description)
       .setURL(openseaLink)
       .addFields(
-        { name: 'Bounty', value: formattedEthPrice+ethers.constants.EtherSymbol, inline: true },
-        { name: 'USD', value: '$'+Number(formattedUsdPrice).toFixed(2), inline: true },
-        { name: 'Captor', value: finalBuyer, inline: true },
+        { name: 'Bounty', value: formattedUnits+' '+units, inline: true },
+        { name: 'Captor', value: buyerAddr, inline: true },
         //{ name: 'Threat Level', value: threatLevel, inline: true },
       )
       .setImage(imageUrl)
@@ -173,14 +157,14 @@ setInterval(() => {
 
     const events = _.get(response, ['data', 'asset_events']);
     const sortedEvents = _.sortBy(events, function(event) {
-        const created = _.get(event, 'created_date');
+        const created = _.get(event, 'event_timestamp');
         return new Date(created);
     })
 
     console.log(events.length, ' sales since the last one...');
 
     _.each(sortedEvents, (event) => {
-        const created = _.get(event, 'created_date');
+        const created = _.get(event, 'event_timestamp');
         cache.set('lastSaleTime', DateTime.fromISO(created).toUnixInteger());
         return formatAndSendEmbed(event);
     });
